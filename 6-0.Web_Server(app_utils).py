@@ -1,4 +1,9 @@
+
+#6.web_server服务器拆分模块化
+
 import socket
+import utils from .
+import app
 
 
 class WebServer(object):
@@ -33,9 +38,7 @@ class WebServer(object):
             self.new_socket.close()
             return
 
-        request_line = 'HTTP/1.1 200 OK\r\n'
-        request_header = '\r\n'
-        request_blank = '\r\n'
+
         #返回固定信息
         # request_body  = 'hello world'
         #返回固定页面
@@ -55,7 +58,7 @@ class WebServer(object):
             request_line = 'HTTP/1.1 404 Not Found\r\n'
             request_body = 'Error %s'%str(e)
 
-        request_data = request_line + request_header + request_blank + request_body
+        request_data =
 
         self.new_socket.send(request_data.encode())
 

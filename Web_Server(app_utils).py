@@ -1,0 +1,56 @@
+
+#6.web_server服务器拆分模块化
+
+import socket
+import app
+
+
+class WebServer(object):
+    def __init__(self):
+
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, True)
+
+        server_socket.bind(('192.168.179.128', 8080))
+
+        server_socket.listen(128)
+
+        self.server_socket = server_socket
+
+        print('已启动连接%s，端口号%s'%('192.168.179.128', 8080))
+
+    def start(self):
+        while True:
+            new_socket, IP_addr = self.server_socket.accept()
+            print('有新连接%s'%IP_addr)
+            self.request_handler(new_socket,IP_addr)
+            # new_socket, IP_addr = server_socket.accept()
+            # request_handler(new_socket)
+    def stop(self):
+        self.server_socket.close()
+
+    def request_handler(self,new_socket,IP_addr):
+
+        recv_data = new_socket.recv(1024)
+        print('已接受响应请求:\r\n%s'%recv_data.decode())
+
+        if not recv_data:
+            print ('客户服务器已断开')
+            new_socket.close()
+            return
+        cur_path = 'web_test/templates'
+        request_data = app.applications(recv_data,cur_path)
+
+        new_socket.send(request_data.encode())
+
+        new_socket.close()
+
+
+
+Mini_WebServer = WebServer()
+# print(Mini_WebServer.new_socket)
+Mini_WebServer.start()
+Mini_WebServer.stop()
+
+
